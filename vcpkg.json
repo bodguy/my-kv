@@ -1,0 +1,13 @@
+{
+  "name" : "my-kv",
+  "version-string" : "1.0.0",
+  "builtin-baseline" : "c9f906558f9bb12ee9811d6edc98ec9255c6cda5",
+  "dependencies" : [ {
+    "name" : "spdlog",
+    "version>=" : "1.11.0",
+    "$comment" : "    # this is heuristically generated, and may not be correct\n\n    find_package(spdlog CONFIG REQUIRED)\n\n    target_link_libraries(main PRIVATE spdlog::spdlog spdlog::spdlog_header_only)\n"
+  }, {
+    "name" : "gtest",
+    "version>=" : "1.13.0"
+  } ]
+}
