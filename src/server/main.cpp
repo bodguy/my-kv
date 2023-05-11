@@ -1,34 +1,9 @@
 #include <cstdlib>
-#include <cstring>
-#include <cstdio>
-#include <cerrno>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#include <spdlog/spdlog.h>
-
-static void msg(const char *msg) {
-    spdlog::warn("{}", msg);
-}
-
-static void die(const char *msg) {
-    int err = errno;
-    spdlog::error("[{}] {}", err, msg);
-    abort();
-}
-
-static void do_something(int connfd) {
-    char rbuf[64] = {};
-    ssize_t n = read(connfd, rbuf, sizeof(rbuf) - 1);
-    if (n < 0) {
-        msg("read() error");
-        return;
-    }
-    printf("client says: %s\n", rbuf);
-
-    char wbuf[] = "world";
-    write(connfd, wbuf, strlen(wbuf));
-}
+#include "io_helpers.h"
+#include "one_request.h"
 
 int main() {
     int fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -66,7 +41,13 @@ int main() {
             continue;   // error
         }
 
-        do_something(connfd);
+        while(true) {
+            int32_t err = one_request(connfd);
+            if (err) {
+                break;
+            }
+        }
+
         close(connfd);
     }
 
